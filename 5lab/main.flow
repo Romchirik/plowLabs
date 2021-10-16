@@ -1,0 +1,95 @@
+import lingo/pegcode/driver;
+import form/renderform;
+import string;
+
+ArExpr ::= ArSum, ArMult, ArInt;
+ArSum(lhs: ArExpr, rhs: ArExpr);
+ArMult(lhs: ArExpr, rhs: ArExpr);
+ArInt(val: int);
+
+s2arexpr(str : string) -> ArExpr {
+		e_gr = "#include arith.lingo";
+		parsic(
+			compilePegGrammar(e_gr),
+			str, SemanticActions(setTree(defaultPegActions.t, "createArInt", \s -> ArInt(s2i(s[0]))))
+		)
+	}
+
+
+evaluate_arexpr(root: ArExpr) -> int {
+    switch (root : ArExpr) {
+        ArSum (lhs, rhs): {
+            evaluate_arexpr(lhs) + evaluate_arexpr(rhs)
+        }
+        ArMult (lhs, rhs): {
+            evaluate_arexpr(lhs) * evaluate_arexpr(rhs)
+        }
+        ArInt (val): {
+            val
+        }
+    }
+}
+
+unfoldinf_arexpr(root: ArExpr) -> string {
+    switch (root : ArExpr) {
+        ArSum (lhs, rhs): {
+            strGlue(
+                ["(", unfoldinf_arexpr(lhs), "+", unfoldinf_arexpr(rhs), ")"], " ",
+                
+            ) 
+        }
+        ArMult (lhs, rhs): {
+            strGlue(
+                ["(", unfoldinf_arexpr(lhs), "*", unfoldinf_arexpr(rhs), ")"], " ",
+            )
+        }
+        ArInt (val): {
+            i2s(val)
+        }
+    }
+}
+
+unfoldpstf_arexpr(root: ArExpr) -> string {
+    switch (root : ArExpr) {
+        ArSum (lhs, rhs): {
+            strGlue(
+                [unfoldpstf_arexpr(lhs), unfoldpstf_arexpr(rhs) , "+"], " ",
+                
+            ) 
+        }
+        ArMult (lhs, rhs): {
+            strGlue(
+                [unfoldpstf_arexpr(lhs), unfoldpstf_arexpr(rhs), "*"], " ",
+            )
+        }
+        ArInt (val): {
+            i2s(val)
+        }
+    }
+}
+
+unfoldpref_arexpr(root: ArExpr) -> string {
+    switch (root : ArExpr) {
+        ArSum (lhs, rhs): {
+            strGlue(
+                ["+", unfoldpref_arexpr(lhs), unfoldpref_arexpr(rhs)], " ",
+            ) 
+        }
+        ArMult (lhs, rhs): {
+            strGlue(
+                ["*", unfoldpref_arexpr(lhs), unfoldpref_arexpr(rhs)], " ",
+            )
+        }
+        ArInt (val): {
+            i2s(val)
+        }
+    }
+}
+main() {
+    expr = getUrlParameter("expr");
+    root = s2arexpr(expr);
+    println(evaluate_arexpr(root));
+    println(unfoldinf_arexpr(root));
+    println(unfoldpstf_arexpr(root));
+    println(unfoldpref_arexpr(root));
+}

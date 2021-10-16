@@ -1,0 +1,164 @@
+import lingo/pegcode/driver;
+import form/renderform;
+import ds/vector;
+import string;
+
+ArExpr ::= ArSum, ArMult, ArInt;
+ArSum(lhs: ArExpr, rhs: ArExpr);
+ArMult(lhs: ArExpr, rhs: ArExpr);
+ArInt(val: int);
+
+ArSumRpn();
+ArMulRpn();
+ArOpRpn ::= ArSumRpn, ArMulRpn;
+ArExprRpn ::= ArArgRpn, ArOpRpn;
+ArArgRpn(value: int);
+
+
+popVector(vector: Vector<?>) -> ? {
+    idx = sizeVector(vector) - 1;
+    tmp = getVectorUnsafe(vector, idx);
+    removeVector(vector, idx);
+    tmp
+}
+
+
+
+evaluate_rpn(expr: [ArExprRpn]) -> int {
+    stack = makeVector(10);
+
+    iter(expr, \item -> {
+        switch (item : ArExprRpn) {
+            ArArgRpn(val) : {
+                pushVector(stack, val);    
+            }
+            ArSumRpn() : {
+                pushVector(stack, popVector(stack) + popVector(stack));
+            }
+            ArMulRpn() : {
+                pushVector(stack, popVector(stack) * popVector(stack));
+            }
+
+        }
+    })
+
+    getVectorUnsafe(stack, 0);
+}
+
+arrpn2s(item: ArExprRpn) -> string {
+    switch (item) {
+        ArSumRpn(): {
+            "+"
+        }
+        ArMulRpn(): {
+            "*"
+        }
+        ArArgRpn(val): {
+            i2s(val)
+        }
+    }
+}
+
+rpn2s(rpn: [ArExprRpn]) -> string {
+    strGlue(map(rpn, arrpn2s), " ");
+}
+
+arexpr2arexprrpn(root: ArExpr) -> [ArExprRpn] {
+    switch(root: ArExpr){
+        ArInt(val): [ArArgRpn(val)];
+        ArSum(lhs, rhs) : concat(concat(arexpr2arexprrpn(lhs), arexpr2arexprrpn(rhs)), [ArSumRpn()]);
+        ArMult(lhs, rhs) : concat(concat(arexpr2arexprrpn(lhs), arexpr2arexprrpn(rhs)), [ArMulRpn()]);
+    }
+}
+
+sinf2arexpr(str : string) -> ArExpr {
+	e_gr = "#include arith_inf.lingo";
+	parsic(
+		compilePegGrammar(e_gr),
+		str, SemanticActions(setTree(defaultPegActions.t, "createArInt", \s -> ArInt(s2i(s[0]))))
+	)
+}
+
+
+evaluate_arexpr(root: ArExpr) -> int {
+    switch (root : ArExpr) {
+        ArSum (lhs, rhs): {
+            evaluate_arexpr(lhs) + evaluate_arexpr(rhs)
+        }
+        ArMult (lhs, rhs): {
+            evaluate_arexpr(lhs) * evaluate_arexpr(rhs)
+        }
+        ArInt (val): {
+            val
+        }
+    }
+}
+
+unfoldinf_arexpr(root: ArExpr) -> string {
+    switch (root : ArExpr) {
+        ArSum (lhs, rhs): {
+            strGlue(
+                ["(", unfoldinf_arexpr(lhs), "+", unfoldinf_arexpr(rhs), ")"], "",
+                
+            ) 
+        }
+        ArMult (lhs, rhs): {
+            strGlue(
+                ["(", unfoldinf_arexpr(lhs), "*", unfoldinf_arexpr(rhs), ")"], "",
+            )
+        }
+        ArInt (val): {
+            i2s(val)
+        }
+    }
+}
+
+rpn2arexpr(rpn: [ArExprRpn]) -> ArExpr{
+    stack = makeVector(10);
+    iter(rpn, \item -> {
+        switch (item : ArExprRpn) {
+            ArArgRpn(val) : {
+                pushVector(stack, ArInt(val));    
+            }
+            ArSumRpn() : {
+                pushVector(stack, ArSum(popVector(stack), popVector(stack)));
+            }
+            ArMulRpn() : {
+                pushVector(stack, ArMult(popVector(stack), popVector(stack)));
+            }
+        }
+    })
+    getVectorUnsafe(stack, 0)
+}
+
+unfoldrpn_arexpr(root: ArExpr) -> string {
+    switch (root : ArExpr) {
+        ArSum (lhs, rhs): {
+            strGlue(
+                [unfoldrpn_arexpr(lhs), unfoldrpn_arexpr(rhs) , "+"], "",
+                
+            ) 
+        }
+        ArMult (lhs, rhs): {
+            strGlue(
+                [unfoldrpn_arexpr(lhs), unfoldrpn_arexpr(rhs), "*"], "",
+            )
+        }
+        ArInt (val): {
+            i2s(val)
+        }
+    }
+}
+
+main() {
+    expr = getUrlParameter("expr");
+    root = sinf2arexpr(expr);
+    rpn = arexpr2arexprrpn(root);
+
+
+    root_new = rpn2arexpr(rpn);
+
+    println(rpn2s(rpn));
+    println(unfoldinf_arexpr(root_new));
+    println(evaluate_rpn(rpn));
+}

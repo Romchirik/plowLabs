@@ -1,0 +1,9 @@
+import string;
+
+
+sum(arr: [int]) -> int {
+    fold(arr, 0, \x, y -> x + y);
+}
+main(){
+    println(sum([1, 2, 3, 4, 5]))
+}

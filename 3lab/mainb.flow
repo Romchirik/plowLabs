@@ -1,0 +1,27 @@
+import string;
+
+arr2s(arr: [int]) -> string {
+    strGlue(map(arr, i2s), ",");
+}
+
+fib_tail(n: int, sarr: [int]) -> [int]{
+    if(n <= 2) {
+        sarr
+    } else {
+        l = length(sarr);
+        fib_tail(n - 1, concat(sarr, [sarr[l - 1] + sarr[l - 2]]));
+    }
+}
+
+fib(n: int) -> [int]{
+    if(n == 0) []
+    else if(n == 1) [0]
+    else if(n == 2) [0, 1] 
+    else {
+        fib_tail(n, [0, 1])
+    }
+}
+
+main(){
+    println(arr2s(fib(10)));
+}

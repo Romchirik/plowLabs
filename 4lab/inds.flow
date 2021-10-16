@@ -1,0 +1,14 @@
+inds(a: [int], m: int) -> [Pair<int, int>]{
+    arr_ind = fold(a, [], \acc, n -> concat(acc, [IndNum(length(acc), n)]))
+
+    fold(arr_ind, [], \acc, a-> 
+        fold(arr_ind, acc, \bcc, b -> 
+            if(a.num + b.num == m) {
+                concat(bcc, Pair(a.ind, b.ind))
+            }
+            else {
+                bcc
+            }
+        )
+    )
+}

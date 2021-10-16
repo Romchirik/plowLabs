@@ -1,0 +1,9 @@
+import string;
+
+arr2s(arr: [int]) -> string {
+    strGlue(map(arr, i2s), ",");
+}
+
+main(){
+    println(arr2s([1, 2, 3]));
+}

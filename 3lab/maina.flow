@@ -1,0 +1,19 @@
+import string;
+
+arr2s(arr: [int]) -> string {
+    strGlue(map(arr, i2s), ",");
+}
+
+fib(n: int) -> [int]{
+    if(n == 0) []
+    else if(n == 1) [0]
+    else if(n == 2) [0, 1]
+    else {
+        tmp = fib(n - 1);
+        concat(tmp, [tmp[n - 2] + tmp[n - 3]]);
+    }
+}
+
+main(){
+    println(arr2s(fib(10)));
+}
