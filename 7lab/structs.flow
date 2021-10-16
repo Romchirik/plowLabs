@@ -1,0 +1,23 @@
+export {
+    ArExpr ::= ArSum, ArSub, ArMul, ArDiv, ArNumber;
+
+    //Tree form
+    ArSum(lhs: ArExpr, rhs: ArExpr);
+    ArSub(lhs: ArExpr, rhs: ArExpr);
+    ArMul(lhs: ArExpr, rhs: ArExpr);
+    ArDiv(lhs: ArExpr, rhs: ArExpr);
+    ArNeg(bhs: ArExpr);
+
+    //RPN form 
+    RpnSum();
+    RpnSub();
+    RpnMul();
+    RpnDiv();
+    RpnNeg();
+    RpnOp ::= RpnSum, RpnSub, RpnMul, RpnDiv;
+    RpnExpr ::= Fraction, RpnOp;
+
+    //Numder description for both forms
+    Fraction(numerator: int, deniminator: int);
+}
+

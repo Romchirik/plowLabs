@@ -1,0 +1,45 @@
+import math/math
+import structs
+
+evaluate_arexpr(root: ArExpr) -> Fraction {
+    switch (root : ArExpr) {
+        ArSum (lhs, rhs): {
+            evaluate_arexpr(lhs) + evaluate_arexpr(rhs)
+        }
+        ArMul (lhs, rhs): {
+            evaluate_arexpr(lhs) * evaluate_arexpr(rhs)
+        }
+        ArInt (val): {
+            val
+        }
+    }
+}
+
+fraction_sum() -> Fraction {
+
+}
+
+fraction_sub() -> Fraction {
+
+}
+
+fraction_mul() -> Fraction {
+
+}
+
+fraction_div() -> Fraction {
+
+}
+
+fraction_neg() -> Fraction {
+
+}
+
+fraction_simplify(tar: Fraction) -> Fraction {
+    gcd = gcd(tar.numerator, deniminator);
+    if(tar.deniminator < 0) {
+
+    } else {
+        Fraction(tar.numerator / gcd, tar.deniminator / gcd);
+    }
+}
