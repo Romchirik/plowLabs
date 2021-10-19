@@ -1,0 +1,17 @@
+expr = operations | numeric;
+
+operations = sum | sub | mul | div | neg; 
+numeric = frac | var;
+
+sum = ws "(" ws expr:l ws "+" ws expr:r ws ")" ws { ArSum(:l, :r) };
+sub = ws "(" ws expr:l ws "-" ws expr:r ws ")" ws { ArSub(:l, :r) };
+mul = ws "(" ws expr:l ws "*" ws expr:r ws ")" ws { ArMul(:l, :r) };
+div = ws "(" ws expr:l ws "/" ws expr:r ws ")" ws { ArDiv(:l, :r) };
+neg = ws "-" ws expr:b ws { ArNeg(:b) };
+
+
+word = ('a' - 'z')+ ('0' - '9')*;
+var = ws word$s ws {ArVar($s)};
+digit = '0' - '9';
+frac = digit+ $s { Fraction(s2i($s), 1)};
+ws = (' ' | '\t' | '\n' | '\r')*;
