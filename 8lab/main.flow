@@ -1,0 +1,11 @@
+
+import frac;
+import structs;
+import algorithm;
+
+main(){
+    str = getUrlParameter("expr");
+    root = s2arexpr(str);
+     
+    
+}

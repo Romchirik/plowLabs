@@ -1,0 +1,78 @@
+import frac;
+import structs;
+import lingo/pegcode/driver;
+import runtime;
+
+export {
+    //string stuff
+    s2arexpr(target: string) -> ArExpr;
+    arexpr2s(root: ArExpr) -> string;
+
+    //different stuff
+    evaluate_arexpr(root: ArExpr) -> Fraction;
+}
+
+arexpr2s(root: ArExpr) -> string {
+    switch (root : ArExpr) {
+        ArSum(lhs, rhs): {
+            strGlue(["(", arexpr2s(lhs), "+", arexpr2s(rhs), ")"], "",);
+        }
+        ArSub(lhs, rhs): {
+            strGlue(["(", arexpr2s(lhs), "-", arexpr2s(rhs), ")"], "",);
+        }
+        ArMul(lhs, rhs): {
+            strGlue(["(", arexpr2s(lhs), "*", arexpr2s(rhs), ")"], "",);
+        }
+        ArDiv(lhs, rhs): {
+            strGlue(["(", arexpr2s(lhs), "/", arexpr2s(rhs), ")"], "");
+        }
+        ArVar(name) : {
+            name;
+        }
+        ArNeg(child): {
+            strGlue(["(", "-", arexpr2s(child)], ")");
+        }
+        Fraction(numerator, denominator): {
+            strGlue(["(", frac2s(root), ")"], "");
+        }
+    }
+}
+
+evaluate_arexpr(root: ArExpr) -> Fraction {
+    switch (root : ArExpr) {
+        ArSum(lhs, rhs): {
+            fraction_sum(evaluate_arexpr(lhs), evaluate_arexpr(rhs));
+        }
+        ArSub(lhs, rhs): {
+            fraction_sub(evaluate_arexpr(lhs), evaluate_arexpr(rhs));
+        }
+        ArMul(lhs, rhs): {
+            fraction_mul(evaluate_arexpr(lhs), evaluate_arexpr(rhs));
+        }
+        ArDiv(lhs, rhs): {
+            fraction_div(evaluate_arexpr(lhs), evaluate_arexpr(rhs));
+        }
+        ArNeg(child): {
+            fraction_neg(evaluate_arexpr(child));
+        }
+        ArVar(name): {
+            rawValue = getUrlParameter(name);
+            if(rawValue == ""){
+                println(strGlue(["Variable value not found: ", name], "")); 
+                quit(0);
+            } 
+            evaluate_arexpr(s2arexpr(rawValue));
+        }
+        Fraction(numerator, denominator): {
+            root;
+        }
+    }
+}
+
+s2arexpr(target: string) -> ArExpr {
+    e_gr = "#include arith.lingo";
+	parsic(
+		compilePegGrammar(e_gr),
+		target, SemanticActions(setTree(defaultPegActions.t, "createArInt", \s -> Fraction(s2i(s[0]), s2i(s[1]))))
+	);
+}
