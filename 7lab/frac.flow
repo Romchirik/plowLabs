@@ -1,0 +1,67 @@
+import math/math;
+
+export {
+    //string stuff
+    frac2s(tar: Fraction) -> string;
+    
+    //operations
+    fraction_simplify(tar: Fraction) -> Fraction;
+    fraction_sum(frist: Fraction, second: Fraction) -> Fraction;
+    fraction_sub(frist: Fraction, second: Fraction) -> Fraction;
+    fraction_mul(frist: Fraction, second: Fraction) -> Fraction;
+    fraction_div(frist: Fraction, second: Fraction) -> Fraction;
+    fraction_neg(tar: Fraction) -> Fraction;
+
+    //fraction description
+    Fraction(numerator: int, denominator: int);
+}
+
+
+Fraction(numerator: int, denominator: int);
+
+fraction_sum(frist: Fraction, second: Fraction) -> Fraction {
+    gcd = gcd(frist.denominator, second.denominator);
+    
+    a = frist.denominator / gcd;
+    b = second.denominator / gcd;
+
+    fraction_simplify(Fraction(frist.numerator * b + second.numerator * a, a * b * gcd));
+}
+
+fraction_sub(frist: Fraction, second: Fraction) -> Fraction {
+   gcd = gcd(frist.denominator, second.denominator);
+    
+    a = frist.denominator / gcd;
+    b = second.denominator / gcd;
+
+    fraction_simplify(Fraction(frist.numerator * b - second.numerator * a, a * b * gcd));
+}
+
+fraction_mul(frist: Fraction, second: Fraction) -> Fraction {
+    fraction_simplify(Fraction(frist.numerator * second.numerator, frist.denominator * second.denominator));
+}
+
+fraction_div(frist: Fraction, second: Fraction) -> Fraction {
+    if(frist.denominator == 0 || second.numerator == 0) {
+        println("Division by zero!");
+        quit(0);
+    }
+    fraction_simplify(Fraction(frist.numerator * second.denominator, frist.denominator * second.numerator));
+}
+
+fraction_neg(tar: Fraction) -> Fraction {
+    fraction_simplify(Fraction(-1 * tar.numerator, tar.denominator));
+}
+
+fraction_simplify(tar: Fraction) -> Fraction {
+    gcd = gcd(iabs(tar.numerator), iabs(tar.denominator));
+    if(tar.denominator < 0) {
+        Fraction(-1 * tar.numerator / gcd, -1 * tar.denominator / gcd);
+    } else {
+        Fraction(tar.numerator / gcd, tar.denominator / gcd);
+    }
+}
+
+frac2s(tar: Fraction) -> string {
+    strGlue([i2s(tar.numerator), "/", i2s(tar.denominator)], "");
+}
