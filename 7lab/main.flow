@@ -6,5 +6,11 @@ import algorithm;
 main(){
     str = getUrlParameter("expr");
     root = s2arexpr(str);
-    println(frac2s(evaluate_arexpr(root)));
+    result = evaluate_arexpr(root); 
+    if(result.denominator == 1){
+        println(i2s(result.numerator));
+    } else {
+        println(frac2s(result));
+    }
+    
 }
