@@ -7,6 +7,5 @@ main(){
     str = getUrlParameter("expr");
     root = arexpr_simplify(s2arexpr(str));
     result = differentiate_arexpr(root, getUrlParameter("var"));
-    println(arexpr2s(result));
     println(arexpr2s(arexpr_simplify(result)));
 }

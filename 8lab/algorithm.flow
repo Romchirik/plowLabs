@@ -166,18 +166,21 @@ arexpr_simplify(root: ArExpr) -> ArExpr {
             second = arexpr_simplify(rhs);
 
             ArSub(first, second);
-            if(is_fraction(first) && is_fraction(second)){
-                fraction_sub(to_fraction(first),to_fraction(second));
+            if(arexpr_compare(first, second)){
+                Fraction(0, 1);
             } else {
-                if(ar_frac_eq(first, Fraction(0, 1))){
-                    second;
-                } else if (ar_frac_eq(second, Fraction(0, 1))){
-                    first;
+                if(is_fraction(first) && is_fraction(second)){
+                    fraction_sub(to_fraction(first),to_fraction(second));
                 } else {
-                    ArSub(first, second);
+                    if(ar_frac_eq(first, Fraction(0, 1))){
+                        second;
+                    } else if (ar_frac_eq(second, Fraction(0, 1))){
+                        first;
+                    } else {
+                        ArSub(first, second);
+                    }
                 }
             }
-            
         }
         ArMul(lhs, rhs): {
             first = arexpr_simplify(lhs);
@@ -231,9 +234,13 @@ arexpr_simplify(root: ArExpr) -> ArExpr {
                     quit(0);
                     ArDiv(numerator, denominator);
                 } else {
-                    ArDiv(numerator, denominator);
+                    if(ar_frac_eq(numerator, Fraction(0, 1))){
+                        println(strGlue(["Check thing not equals to zero: ", arexpr2s(denominator)], ""));
+                        Fraction(0, 1);
+                    } else {
+                        ArDiv(numerator, denominator);
+                    }    
                 }
-                
             } 
         }   
         ArNeg(bhs): {
@@ -256,6 +263,15 @@ arexpr_simplify(root: ArExpr) -> ArExpr {
         }
     }
 }
+
+arexpr_compare(first: ArExpr, second: ArExpr){
+    if(arexpr2s(first) == arexpr2s(second)){
+        true;
+    } else {
+        false;
+    }
+}
+
 
 s2arexpr(target: string) -> ArExpr {
     e_gr = "#include arith.lingo";
