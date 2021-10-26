@@ -11,6 +11,7 @@ export {
     fraction_mul(frist: Fraction, second: Fraction) -> Fraction;
     fraction_div(frist: Fraction, second: Fraction) -> Fraction;
     fraction_neg(tar: Fraction) -> Fraction;
+    fraction_eq(first, second) -> bool;
 
     //fraction description
     Fraction(numerator: int, denominator: int);
@@ -53,8 +54,16 @@ fraction_neg(tar: Fraction) -> Fraction {
     fraction_simplify(Fraction(-1 * tar.numerator, tar.denominator));
 }
 
+fraction_eq(first, second) -> bool {
+    first1 = fraction_simplify(first);
+    second1 = fraction_simplify(second);
+
+    {first1.numerator == second1.numerator && first1.denominator == second1.denominator};
+}
+
 fraction_simplify(tar: Fraction) -> Fraction {
     gcd = gcd(iabs(tar.numerator), iabs(tar.denominator));
+
     if(tar.denominator < 0) {
         Fraction(-1 * tar.numerator / gcd, -1 * tar.denominator / gcd);
     } else {
