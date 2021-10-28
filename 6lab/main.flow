@@ -99,7 +99,6 @@ unfoldinf_arexpr(root: ArExpr) -> string {
         ArSum (lhs, rhs): {
             strGlue(
                 ["(", unfoldinf_arexpr(lhs), "+", unfoldinf_arexpr(rhs), ")"], "",
-                
             ) 
         }
         ArMult (lhs, rhs): {

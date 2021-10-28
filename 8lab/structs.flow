@@ -18,7 +18,6 @@ export {
     RpnDiv();
     RpnNeg();
     RpnOp ::= RpnSum, RpnSub, RpnMul, RpnDiv, RpnNeg;
-
-    RpnExpr ::= Fraction, RpnOp;
+    RpnExpr ::= Fraction, RpnOp;   
 }
 
