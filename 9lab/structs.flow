@@ -1,0 +1,23 @@
+import frac;
+
+export {
+    ArExpr ::= ArSum, ArSub, ArMul, ArDiv, ArNeg, Fraction, ArVar;
+
+    //Tree form
+    ArSum(lhs: ArExpr, rhs: ArExpr);
+    ArSub(lhs: ArExpr, rhs: ArExpr);
+    ArMul(lhs: ArExpr, rhs: ArExpr);
+    ArDiv(lhs: ArExpr, rhs: ArExpr);
+    ArNeg(bhs: ArExpr);
+    ArVar(name: string);
+
+    //RPN form 
+    RpnSum();
+    RpnSub();
+    RpnMul();
+    RpnDiv();
+    RpnNeg();
+    RpnOp ::= RpnSum, RpnSub, RpnMul, RpnDiv, RpnNeg;
+    RpnExpr ::= Fraction, RpnOp;   
+}
+
