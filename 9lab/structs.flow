@@ -1,4 +1,5 @@
 import frac;
+import ds/vector;
 
 export {
     ArExpr ::= ArSum, ArSub, ArMul, ArDiv, ArNeg, Fraction, ArVar;
@@ -19,5 +20,11 @@ export {
     RpnNeg();
     RpnOp ::= RpnSum, RpnSub, RpnMul, RpnDiv, RpnNeg;
     RpnExpr ::= Fraction, RpnOp;   
+
+    //Ratfunc
+    RatVar(name: string, pow: int);
+    RatPol(mons: Vector<RatMon>);
+    RatMon(coef: Fraction, mul: Vector<RatVar>);
+    RatFun(numerator: RatPol, denominator: RatPol);
 }
 

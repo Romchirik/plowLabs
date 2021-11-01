@@ -25,6 +25,7 @@ ar_frac_eq(first: ArExpr, second: Fraction) -> bool {
     }
 }
 
+
 arexpr2s(root: ArExpr) -> string {
     switch (root : ArExpr) {
         ArSum(lhs, rhs): {
@@ -52,6 +53,20 @@ arexpr2s(root: ArExpr) -> string {
     }
 }
 
+
+
+
+is_mul(root: ArExpr) -> bool{
+    switch(root: ArExpr) {
+        ArMul(lhs, rhs): {
+            true;
+        }
+        default: {
+            false;
+        }
+    }
+}
+
 is_div(root: ArExpr) -> bool{
     switch(root: ArExpr) {
         ArDiv(lhs, rhs): {
@@ -63,6 +78,31 @@ is_div(root: ArExpr) -> bool{
 
     }
 }
+
+
+is_sum(root: ArExpr) -> bool{
+    switch(root: ArExpr) {
+        ArSum(lhs, rhs): {
+            true;
+        }
+        default: {
+            false;
+        }
+
+    }
+}
+
+is_sub(root: ArExpr) -> bool{
+    switch(root: ArExpr) {
+        ArSub(lhs, rhs): {
+            true;
+        }
+        default: {
+            false;
+        }
+    }
+}
+
 is_fraction(root: ArExpr) -> bool {
     switch(root: ArExpr) {
         Fraction(numerator, denominator): {
@@ -87,6 +127,7 @@ to_fraction(root: ArExpr) -> Fraction{
 
     }
 }
+
 
 
 evaluate_arexpr(root: ArExpr) -> Fraction {
@@ -231,7 +272,7 @@ arexpr_simplify(root: ArExpr) -> ArExpr {
                 } else {
                     ArMul(first, second);
                 }
-            }   
+            } 
         }
         ArDiv(lhs, rhs): {
             numerator = arexpr_simplify(lhs);
