@@ -22,6 +22,7 @@ export {
     RpnExpr ::= Fraction, RpnOp;   
 
     //Ratfunc
+
     RatVar(name: string, pow: int);
     RatPol(mons: Vector<RatMon>);
     RatMon(coef: Fraction, mul: Vector<RatVar>);

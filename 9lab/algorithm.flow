@@ -11,43 +11,38 @@ export {
     //different stuff
     evaluate_arexpr(root: ArExpr) -> Fraction;
     arexpr_simplify(root: ArExpr) -> ArExpr;
-    arexpr_ratfunc(root: ArExpr) -> ArDiv;
+    arexpr2ratfun(root: ArExpr) -> RatFun;
 }
 
-ar_frac_eq(first: ArExpr, second: Fraction) -> bool {
-    switch(first: ArExpr){
-        Fraction(numerator, denominator): {
-            fraction_eq(Fraction(numerator, denominator), second);
-        }
-        default: {
-            false;
-        }
+arexpr2ratfun(root: ArExpr) -> RatFun{
+    tmp = arexpr_simplify(__arexpr_ratfunc__(root));
+    if(is_div(tmp){
+        _tmp = to_div(tmp);
+        RatFun(__arexpr2ratfun(_tmp.lhs, _tmp.rhs);
+    } else {
+        _tmp = ArDiv(tmp, Fraction(1, 1));
+        RatFun(__arexpr2ratfun(_tmp.lhs, _tmp.rhs);
     }
 }
 
-
-arexpr2s(root: ArExpr) -> string {
+__arexpr2ratfun(root: ArDiv) -> RatPol {
     switch (root : ArExpr) {
         ArSum(lhs, rhs): {
-            strGlue(["(", arexpr2s(lhs), "+", arexpr2s(rhs), ")"], "",);
+            
         }
         ArSub(lhs, rhs): {
-            strGlue(["(", arexpr2s(lhs), "-", arexpr2s(rhs), ")"], "",);
         }
         ArMul(lhs, rhs): {
-            strGlue(["(", arexpr2s(lhs), "*", arexpr2s(rhs), ")"], "",);
+            
         }
         ArDiv(lhs, rhs): {
-            strGlue(["(", arexpr2s(lhs), "/", arexpr2s(rhs), ")"], "");
+            
+            __arexpr2ratfun(lhs);
         }
-        ArVar(name) : {
-            name;
+        ArNeg(bhs): {
+            
         }
-        ArNeg(child): {
-            strGlue(["(", "-", arexpr2s(child)], ")");
-        }
-        Fraction(numerator, denominator): {
-            frac2s(root);
+        default: {
             
         }
     }
@@ -55,114 +50,7 @@ arexpr2s(root: ArExpr) -> string {
 
 
 
-
-is_mul(root: ArExpr) -> bool{
-    switch(root: ArExpr) {
-        ArMul(lhs, rhs): {
-            true;
-        }
-        default: {
-            false;
-        }
-    }
-}
-
-is_div(root: ArExpr) -> bool{
-    switch(root: ArExpr) {
-        ArDiv(lhs, rhs): {
-            true;
-        }
-        default: {
-            false;
-        }
-
-    }
-}
-
-
-is_sum(root: ArExpr) -> bool{
-    switch(root: ArExpr) {
-        ArSum(lhs, rhs): {
-            true;
-        }
-        default: {
-            false;
-        }
-
-    }
-}
-
-is_sub(root: ArExpr) -> bool{
-    switch(root: ArExpr) {
-        ArSub(lhs, rhs): {
-            true;
-        }
-        default: {
-            false;
-        }
-    }
-}
-
-is_fraction(root: ArExpr) -> bool {
-    switch(root: ArExpr) {
-        Fraction(numerator, denominator): {
-            true;
-        }
-        default: {
-            false;
-        }
-
-    }
-}
-
-to_fraction(root: ArExpr) -> Fraction{
-    switch(root: ArExpr) {
-        Fraction(numerator, denominator): {
-            Fraction(numerator, denominator)
-        }
-        default: {
-            println("Not a fraction passd,");
-            evaluate_arexpr(root);
-        }
-
-    }
-}
-
-
-
-evaluate_arexpr(root: ArExpr) -> Fraction {
-    switch (root : ArExpr) {
-        ArSum(lhs, rhs): {
-            fraction_sum(evaluate_arexpr(lhs), evaluate_arexpr(rhs));
-        }
-        ArSub(lhs, rhs): {
-            fraction_sub(evaluate_arexpr(lhs), evaluate_arexpr(rhs));
-        }
-        ArMul(lhs, rhs): {
-            fraction_mul(evaluate_arexpr(lhs), evaluate_arexpr(rhs));
-        }
-        ArDiv(lhs, rhs): {
-            fraction_div(evaluate_arexpr(lhs), evaluate_arexpr(rhs));
-        }
-        ArNeg(child): {
-            fraction_neg(evaluate_arexpr(child));
-        }
-        ArVar(name): {
-            rawValue = getUrlParameter(name);
-            if(rawValue == ""){
-                println(strGlue(["Variable value not found: ", name], "")); 
-                quit(0);
-            } 
-            evaluate_arexpr(s2arexpr(rawValue));
-        }
-        Fraction(numerator, denominator): {
-            root;
-        }
-    }
-}
-
-
-arexpr_ratfunc(root: ArExpr) -> ArDiv {
+__arexpr_ratfunc__(root: ArExpr) -> ArDiv {
     switch (root : ArExpr) {
         ArSum(lhs, rhs): {
             first = arexpr_ratfunc(lhs);
@@ -336,4 +224,163 @@ s2arexpr(target: string) -> ArExpr {
 		compilePegGrammar(e_gr),
 		target, SemanticActions(setTree(defaultPegActions.t, "createArInt", \s -> Fraction(s2i(s[0]), s2i(s[1]))))
 	);
+}
+
+arexpr2s(root: ArExpr) -> string {
+    switch (root : ArExpr) {
+        ArSum(lhs, rhs): {
+            strGlue(["(", arexpr2s(lhs), "+", arexpr2s(rhs), ")"], "",);
+        }
+        ArSub(lhs, rhs): {
+            strGlue(["(", arexpr2s(lhs), "-", arexpr2s(rhs), ")"], "",);
+        }
+        ArMul(lhs, rhs): {
+            strGlue(["(", arexpr2s(lhs), "*", arexpr2s(rhs), ")"], "",);
+        }
+        ArDiv(lhs, rhs): {
+            strGlue(["(", arexpr2s(lhs), "/", arexpr2s(rhs), ")"], "");
+        }
+        ArVar(name) : {
+            name;
+        }
+        ArNeg(child): {
+            strGlue(["(", "-", arexpr2s(child)], ")");
+        }
+        Fraction(numerator, denominator): {
+            frac2s(root);
+            
+        }
+    }
+}
+
+
+
+
+is_mul(root: ArExpr) -> bool{
+    switch(root: ArExpr) {
+        ArMul(lhs, rhs): {
+            true;
+        }
+        default: {
+            false;
+        }
+    }
+}
+
+is_div(root: ArExpr) -> bool{
+    switch(root: ArExpr) {
+        ArDiv(lhs, rhs): {
+            true;
+        }
+        default: {
+            false;
+        }
+
+    }
+}
+
+
+is_sum(root: ArExpr) -> bool{
+    switch(root: ArExpr) {
+        ArSum(lhs, rhs): {
+            true;
+        }
+        default: {
+            false;
+        }
+
+    }
+}
+
+is_sub(root: ArExpr) -> bool{
+    switch(root: ArExpr) {
+        ArSub(lhs, rhs): {
+            true;
+        }
+        default: {
+            false;
+        }
+    }
+}
+
+is_fraction(root: ArExpr) -> bool {
+    switch(root: ArExpr) {
+        Fraction(numerator, denominator): {
+            true;
+        }
+        default: {
+            false;
+        }
+
+    }
+}
+
+to_div(root: ArExpr) -> ArDiv{
+    switch(root: ArExpr) {
+        ArDiv(lhs, rhs): {
+            ArDiv(lhs, rhs)
+        }
+        default: {
+            __arexpr_ratfunc__(root);
+        }
+
+    }
+}
+
+to_fraction(root: ArExpr) -> Fraction{
+    switch(root: ArExpr) {
+        Fraction(numerator, denominator): {
+            Fraction(numerator, denominator)
+        }
+        default: {
+            println("Not a fraction passd,");
+            evaluate_arexpr(root);
+        }
+
+    }
+}
+
+
+
+evaluate_arexpr(root: ArExpr) -> Fraction {
+    switch (root : ArExpr) {
+        ArSum(lhs, rhs): {
+            fraction_sum(evaluate_arexpr(lhs), evaluate_arexpr(rhs));
+        }
+        ArSub(lhs, rhs): {
+            fraction_sub(evaluate_arexpr(lhs), evaluate_arexpr(rhs));
+        }
+        ArMul(lhs, rhs): {
+            fraction_mul(evaluate_arexpr(lhs), evaluate_arexpr(rhs));
+        }
+        ArDiv(lhs, rhs): {
+            fraction_div(evaluate_arexpr(lhs), evaluate_arexpr(rhs));
+        }
+        ArNeg(child): {
+            fraction_neg(evaluate_arexpr(child));
+        }
+        ArVar(name): {
+            rawValue = getUrlParameter(name);
+            if(rawValue == ""){
+                println(strGlue(["Variable value not found: ", name], "")); 
+                quit(0);
+            } 
+            evaluate_arexpr(s2arexpr(rawValue));
+        }
+        Fraction(numerator, denominator): {
+            root;
+        }
+    }
+}
+
+
+ar_frac_eq(first: ArExpr, second: Fraction) -> bool {
+    switch(first: ArExpr){
+        Fraction(numerator, denominator): {
+            fraction_eq(Fraction(numerator, denominator), second);
+        }
+        default: {
+            false;
+        }
+    }
 }
