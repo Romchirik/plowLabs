@@ -75,6 +75,6 @@ frac2s(tar: Fraction) -> string {
     if (tar.denominator == 1){
         i2s(tar.numerator);
     } else {
-        strGlue([i2s(tar.numerator), "/", i2s(tar.denominator)], "");    
+        strGlue(["(", i2s(tar.numerator), "/", i2s(tar.denominator), ")"], "");    
     }
 }

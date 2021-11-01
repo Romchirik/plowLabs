@@ -46,7 +46,7 @@ arexpr2s(root: ArExpr) -> string {
             strGlue(["(", "-", arexpr2s(child)], ")");
         }
         Fraction(numerator, denominator): {
-            strGlue(["(", frac2s(root), ")"], "");
+            frac2s(root);
         }
     }
 }
@@ -271,7 +271,6 @@ arexpr_compare(first: ArExpr, second: ArExpr){
         false;
     }
 }
-
 
 s2arexpr(target: string) -> ArExpr {
     e_gr = "#include arith.lingo";
