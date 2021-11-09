@@ -73,8 +73,18 @@ fraction_simplify(tar: Fraction) -> Fraction {
 
 frac2s(tar: Fraction) -> string {
     if (tar.denominator == 1){
-        i2s(tar.numerator);
+        if (tar.numerator > 0){
+            "+" + i2s(tar.numerator);
+        } else {
+            i2s(tar.numerator);
+        }
+        
     } else {
-        strGlue(["(", i2s(tar.numerator), "/", i2s(tar.denominator), ")"], "");    
+        if (tar.numerator > 0) {
+            strGlue(["+", "(", i2s(tar.numerator), "/", i2s(tar.denominator), ")"], "");
+        } else {
+            strGlue(["-", "(", i2s(-1 * tar.numerator), "/", i2s(tar.denominator), ")"], "");
+        }
+        
     }
 }
