@@ -1,0 +1,26 @@
+expr = operations | numeric;
+program = decl*:var_declaration ws op
+
+#---------------types---------------
+type = int_type | bool_type | array_type;
+
+bool_type = ws "bool" ws { BoolType() };
+int_type = ws "int" ws { IntType() };
+array_type = ws "[" ws type:_type ws "]" ws { ArrayType(_type) };
+
+decl = ws "var" ws word:name ws ":" ws type:_type ws ";" { Var(name, _type) };
+
+int_operations = sum | sub | mul | div | mod;
+bool_operations = ;
+
+sum = ws "(" ws expr:l ws "+" ws expr:r ws ")" ws { Sum(:l, :r) };
+sub = ws "(" ws expr:l ws "-" ws expr:r ws ")" ws { Sub(:l, :r) };
+mul = ws "(" ws expr:l ws "*" ws expr:r ws ")" ws { Mul(:l, :r) };
+div = ws "(" ws expr:l ws "/" ws expr:r ws ")" ws { Div(:l, :r) };
+mod = ws "(" ws expr:l ws "%" ws expr:r ws ")" ws { Div(:l, :r) };
+
+word = ('a' - 'z')+ ('0' - '9')*;
+var = ws word$s ws { ArVar($s) };
+int = digit+ $s { Int(s2i($s)) };
+digit = '0' - '9';
+ws = (' ' | '\t' | '\n' | '\r')*;

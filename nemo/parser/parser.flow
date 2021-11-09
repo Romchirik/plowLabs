@@ -1,0 +1,6 @@
+import structs;
+
+
+parse(input -> string) -> {
+
+}

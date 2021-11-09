@@ -1,0 +1,32 @@
+export {
+
+    
+    //operators stuff
+
+    //boolean operations
+    And();
+    Or();
+    Xor();
+
+    //int expressions
+    IntExpr ::= Var, Int, Sum, Sub, Mul, Div, Mod;
+    
+    //arithmetic operations
+    Sum(lhs: IntExpr, rhs: IntExpr);
+    Sub(lhs: IntExpr, rhs: IntExpr);
+    Mul(lhs: IntExpr, rhs: IntExpr);
+    Div(lhs: IntExpr, rhs: IntExpr);
+    Mod(lhs: IntExpr, rhs: IntExpr);
+
+    //bool expressions
+    BoolExpr ::= Var;
+    
+    //variables stuff
+    Int(value: int);
+    Bool(value: bool);
+    Array(type: Type, value: [Type]);
+
+    Type ::= Int, Bool, Array;
+
+    Var(name: string, value: Type);
+}
