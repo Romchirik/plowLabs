@@ -20,33 +20,6 @@ export{
     ratmon2s(mon: RatMon) -> string;
 }
 
-
-
-// ratvar_eq(var1: RatVar, var2: RatVar) -> bool {
-//     (var1.name == var2.name) && (var1.pow == var2.pow);
-// }
-
-// vars_eq(vars1: [RatVar], var, size: int) -> bool {
-//     _i = size - 1;
-//     if(ratvar_eq()) {
-
-//         vars_eq()
-//     } else {
-//         false;
-//     }
-// }
-
-// mon_sum_able(first: RatMon, second: RatMon) -> bool {
-//     if(sizeVector(first.vars) == sizeVector(second.vars)){
-//         first_vars = sortCustom(first.vars, \i -> i.name, true);
-//         second_vars = sortCustom(second.vars, \i -> i.name, true);
-        
-//         map
-//     } else {
-//         false;
-//     }
-// }
-
 sub_poly(first: RatPol, second: RatPol) -> RatPol {
     _second = neg_poly(second);
     
@@ -126,6 +99,7 @@ poly_filter(first: RatPol) -> RatPol {
 }
 
 poly2s(pol: RatPol) -> string {
+
     if(sizeTree(pol.mons) == 0){
         "0"
     } else {
