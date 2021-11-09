@@ -2,10 +2,34 @@
 import frac;
 import structs;
 import algorithm;
+import polynom;
+import ds/vector;
+
+
+to_div1(root: ArExpr) -> ArDiv{
+    switch(root: ArExpr) {
+        ArDiv(lhs, rhs): {
+            ArDiv(lhs, rhs)
+        }
+        default: {
+            __arexpr_ratfunc__(root);
+        }
+
+    }
+}
+
 
 main(){
     str = getUrlParameter("expr");
     root = arexpr_simplify(s2arexpr(str));
-    result = arexpr_ratfunc(root);
-    println(arexpr2s(arexpr_simplify(result)));
+    ar_result = arexpr_simplify(__arexpr_ratfunc__(root));
+    result_rat = arexpr2ratfun(root);
+
+    println("");
+    println("input");
+    println(str);
+    println("output");
+    println(ratfun2s(result_rat));
+    println("");    
+    
 }

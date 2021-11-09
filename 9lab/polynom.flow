@@ -1,0 +1,145 @@
+import runtime;
+import structs;
+import frac;
+import algorithms;
+import ds/tree;
+
+export{
+    RatMon(vars: Tree<string, int>);
+    RatPol(mons: Tree<RatMon, Fraction>);
+    RatFun(numerator: RatPol, denominator: RatPol);
+
+    sum_poly(first: RatPol, second: RatPol) -> RatPol;
+    sub_poly(first: RatPol, second: RatPol) -> RatPol;
+    mul_poly(first: RatPol, second: RatPol) -> RatPol;
+    div_poly(first: RatPol, second: RatPol) -> RatFun;
+    neg_poly(poly: RatPol) -> RatPol;
+
+    ratfun2s(fun: RatFun) -> string;
+    poly2s(pol: RatPol) -> string;
+    ratmon2s(mon: RatMon) -> string;
+}
+
+
+
+// ratvar_eq(var1: RatVar, var2: RatVar) -> bool {
+//     (var1.name == var2.name) && (var1.pow == var2.pow);
+// }
+
+// vars_eq(vars1: [RatVar], var, size: int) -> bool {
+//     _i = size - 1;
+//     if(ratvar_eq()) {
+
+//         vars_eq()
+//     } else {
+//         false;
+//     }
+// }
+
+// mon_sum_able(first: RatMon, second: RatMon) -> bool {
+//     if(sizeVector(first.vars) == sizeVector(second.vars)){
+//         first_vars = sortCustom(first.vars, \i -> i.name, true);
+//         second_vars = sortCustom(second.vars, \i -> i.name, true);
+        
+//         map
+//     } else {
+//         false;
+//     }
+// }
+
+sub_poly(first: RatPol, second: RatPol) -> RatPol {
+    _second = neg_poly(second);
+    
+    sum_poly(first, _second) |> poly_filter;
+}
+
+
+sum_poly(first: RatPol, second: RatPol) -> RatPol {
+    RatPol(mergeTreeCustom(first.mons, second.mons, \key, f, s -> {
+        fraction_sum(f, s);
+    })) |> poly_filter;
+}    
+
+mul_poly(first: RatPol, second: RatPol) -> RatPol {
+    RatPol(foldTree(first.mons, makeTree(), \first_mon, first_coef, first_res -> {
+        foldTree(second.mons, first_res, \second_mon, second_coef, second_res -> {
+            tmp = RatMon(mergeTreeCustom(first_mon.vars, second_mon.vars, \key, pow1, pow2 -> pow1 + pow2));
+            _tmp = lookupTree(second_res, tmp);
+            switch(_tmp : Maybe<Fraction>) {
+                Some(coef): {
+                    setTree(second_res, tmp, fraction_sum(coef, fraction_mul(first_coef, second_coef))); 
+                }
+                None(): {
+                    setTree(second_res, tmp, fraction_mul(first_coef, second_coef));
+                }
+            }
+        })
+    })) |> poly_filter;
+}
+
+div_poly(first: RatPol, second: RatPol) -> RatFun{
+    RatFun(first, second);
+}
+
+neg_poly(poly: RatPol) -> RatPol {
+    RatPol(mapTree(poly.mons, \i -> fraction_mul(Fraction(-1, 1), i)));
+}
+
+
+ratmon2s(mon: RatMon) -> string {
+    strGlue(
+        foldTree(mon.vars, [], \key, pow, acc -> {
+            if(pow == 1){
+                concat(acc, [key]);
+            } else {
+                concat(acc, [key + "^" + i2s(pow)]);
+            }
+        }),
+        ""
+    )
+}
+
+ratfun2s(fun: RatFun) -> string {
+    strGlue(["(", poly2s(fun.numerator), ")", "/", "(", poly2s(fun.denominator), ")"], "");
+}
+
+// poly_simplify(first: RatPol) -> RatPol {
+//     RatPol(
+//         foldTree(first.mons, makeTree(), \anom, acoef, acc -> {
+//             la = findInOrder(acc, \k, v -> if (equalTrees(k.vars, anom.vars)) Some(Pair(k, v)) else None());
+//             switch (la) {
+//                 Some(pair): {
+//                     setTree(acc, pair.first, fraction_sum(pair.second, acoef));
+//                 }
+//                 None(): {
+//                     setTree(acc, anom, acoef);
+//                 }
+//             }
+//         })
+//     ) |> poly_filter;
+// }
+
+poly_filter(first: RatPol) -> RatPol {
+    RatPol(
+        filterTree(first.mons, \mon, coef -> !fraction_eq(coef, Fraction(0, 1)))
+    );
+}
+
+poly2s(pol: RatPol) -> string {
+    if(sizeTree(pol.mons) == 0){
+        "0"
+    } else {
+        strGlue(
+            foldTree(pol.mons, [], \key, val, acc -> {
+                if (fraction_eq(val, Fraction(1, 1))  && sizeTree(key.vars) > 0) {
+                    concat(acc, [ratmon2s(key)]);
+                } else if (fraction_eq(val, Fraction(-1, 1))  && sizeTree(key.vars) > 0) {
+                    concat(acc, ["-" + ratmon2s(key)]);
+                } else {
+                    concat(acc, [frac2s(val) + ratmon2s(key)]);
+                }
+            }),
+            "+"
+        );
+    }
+}
