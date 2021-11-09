@@ -17,14 +17,8 @@ export {
     RpnSub();
     RpnMul();
     RpnDiv();
-    RpnNeg();
+    RpnNeg();   
     RpnOp ::= RpnSum, RpnSub, RpnMul, RpnDiv, RpnNeg;
     RpnExpr ::= Fraction, RpnOp;   
-
-    //Ratfunc
-    RatVar(name: string, pow: int);
-    RatPol(mons: Vector<RatMon>);
-    RatMon(coef: Fraction, mul: Vector<RatVar>);
-    RatFun(numerator: RatPol, denominator: RatPol);
 }
 
