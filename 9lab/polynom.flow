@@ -76,22 +76,6 @@ ratfun2s(fun: RatFun) -> string {
     strGlue(["(", poly2s(fun.numerator), ")", "/", "(", poly2s(fun.denominator), ")"], "");
 }
 
-// poly_simplify(first: RatPol) -> RatPol {
-//     RatPol(
-//         foldTree(first.mons, makeTree(), \anom, acoef, acc -> {
-//             la = findInOrder(acc, \k, v -> if (equalTrees(k.vars, anom.vars)) Some(Pair(k, v)) else None());
-//             switch (la) {
-//                 Some(pair): {
-//                     setTree(acc, pair.first, fraction_sum(pair.second, acoef));
-//                 }
-//                 None(): {
-//                     setTree(acc, anom, acoef);
-//                 }
-//             }
-//         })
-//     ) |> poly_filter;
-// }
-
 poly_filter(first: RatPol) -> RatPol {
     RatPol(
         filterTree(first.mons, \mon, coef -> !fraction_eq(coef, Fraction(0, 1)))
