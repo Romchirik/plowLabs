@@ -1,6 +1,6 @@
 import structs;
 
 
-parse(input -> string) -> {
+parse(input -> string) -> Program {
 
 }
