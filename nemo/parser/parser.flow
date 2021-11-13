@@ -1,4 +1,4 @@
-import structs;
+    import structs;
 
 
 parse(input -> string) -> Program {

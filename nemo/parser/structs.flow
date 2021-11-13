@@ -2,34 +2,50 @@ import ds/tree;
 
 export {
     //main sector
-    Program(Defenitions, Body);
-    Defenitions( )
+    Program(defenotions: [VarDefenition], body: Body);
+    Body ::= Assgin, Iterate, Test, Sel, Seq;
+
+    //commands stuff
+    Assgin(var: Var, val: IntExpr);
+    Iterate(body: Body);
+    Test(expr: BoolExpr);
+    Sel(rhs: Body, lhs: Body);
+    Seq(rhs: Body, lhs: Body);
     
     //operators stuff
+    App(target: Var, idx: IntExpr);
+    Upd(target: Var, idx: IntExpr, newval: IntExpr);
+
 
     //int expressions
-    IntExpr ::= Var, Int, Sum, Sub, Mul, Div, Mod;
-    
-    //integer operations
+    IntExpr ::= Sum, Sub, Mul, Div, Mod, Int, Var;
     Sum(lhs: IntExpr, rhs: IntExpr);   
     Sub(lhs: IntExpr, rhs: IntExpr);  
     Mul(lhs: IntExpr, rhs: IntExpr);  
     Div(lhs: IntExpr, rhs: IntExpr);  
     Mod(lhs: IntExpr, rhs: IntExpr);  
+    
+    //boolean expressions
+    BoolExpr ::= And, Or, Xor, Imp, Var, Bool;
+    And(lhs: BoolExpr, rhs: BoolExpr);
+    Or(lhs: BoolExpr, rhs: BoolExpr);
+    Xor(lhs: BoolExpr, rhs: BoolExpr);
+    Imp(lhs: BoolExpr, rhs: BoolExpr);
+    
+    //relations 
+    Relation ::= Eq, LessOrEq, MoreOrEq, Less, More;
+    Eq(lhs: IntExpr, rhs: IntExpr);
+    LessOrEq(lhs: IntExpr, rhs: IntExpr);
+    MoreOrEq(lhs: IntExpr, rhs: IntExpr);
+    Less(lhs: IntExpr, rhs: IntExpr);
+    More(lhs: IntExpr, rhs: IntExpr);
 
-    
-    //boolean operations
-    And();
-    Or();
-    Xor();
-    Impl();
-    
-    //bool expressions
-    
-    
     //variables stuff
+    VarDefenition(var: Var, Type)
+    Var(name: string)
 
-    Var(name: string, type: Type)
+    //Types
+    Type ::= Int, Bool, Array;
 
     Int(value: int);
     Bool(value: bool);
