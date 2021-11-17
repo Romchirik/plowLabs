@@ -240,10 +240,7 @@ arexpr_compare(first: ArExpr, second: ArExpr){
 
 s2arexpr(target: string) -> ArExpr {
     e_gr = "#include arith.lingo";
-	parsic(
-		compilePegGrammar(e_gr),
-		target, SemanticActions(setTree(defaultPegActions.t, "createArInt", \s -> Fraction(s2i(s[0]), s2i(s[1]))))
-	);
+	parsic(compilePegGrammar(e_gr),target, defaultPegActions);
 }
 
 arexpr2s(root: ArExpr) -> string {

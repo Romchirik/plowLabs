@@ -1,6 +1,13 @@
-    import structs;
+import structs;
+import lingo/pegcode/driver;
 
+export {
+	parse(target: string) -> Program;
+}
 
-parse(input -> string) -> Program {
-
+parse(target: string) -> Program {
+    e_gr = "#include grammar.lingo";
+	parsic(
+		compilePegGrammar(e_gr),
+		target, defaultPegActions);
 }

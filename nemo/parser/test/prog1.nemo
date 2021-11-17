@@ -1,3 +1,0 @@
-var int_tmp: int;
-var arr_tmp: [int];
-var bool_tmp: bool;

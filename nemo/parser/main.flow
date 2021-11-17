@@ -1,5 +1,7 @@
 import runtime;
+import parser;
 
-main(){
-    println("hello world");
+
+main(){ 
+    println(parse(getFileContent(getUrlParameter("target"))));
 }

@@ -1,63 +1,62 @@
 //MAIN SECTOR===========================================================================================================================
-program = defenition*:ds ws "{" body:b "}" ws {Program(:ds, :b)};
+program = defenition*:ds ws "{" ws body:b  ws "}" ws { Program(:ds, :b) };
+
+body = sequence | end;
+
+//OPERATORS==============================================================================================================================
+end         = ws command:b ws semi ws                   {     End(:b) };
+sequence    = ws command:l ws semi ws body:r ws         { Sqn(:l, :r) };
 
 //COMMANDS==============================================================================================================================
-body = assign | iterate | test | select | sequence;
+command = assign | app | upd | iterate | test | select;
 
-assign      = ws word:l ws "=" ws int_expr:r ws semi    { Assign(:l, :r) };
-iterate     = ws "{" ws body:b ws "}*"                  {    Iterate(:b) };
-test        = ws "{" ws bool_expr:expr ws "}?"          {    Test(:expr) };
-select      = ws "{" ws body:l ws "U" ws body:r ws "}"  {    Sel(:l, :r) };
-sequence    = ws "{" ws body:l ws semi ws body:r ws "}" {    Seq(:l, :r) };
-
-//OPERATORS=============================================================================================================================
-app = ws "app" ws "(" ws var:target ws "," ws int_expr:idx ws ")" ws                    {         App(target, idx) };
-upd = ws "upd" ws "(" ws var:target ws "," ws int_expr:idx ws "," ws int_expr:newval ws { Upd(target, idx, newval) };
+iterate = ws "*{" ws body:b ws "}"                                                                 {                 Iterate(:b) };
+test    = ws "?(" ws bool_expr:expr ws ")"                                                         {                 Test(:expr) };
+select  = ws "{" ws "{" ws body:l ws "}" ws "U" ws "{" ws body:r ws "}" ws "}"                     {                 Sel(:l, :r) };
+assign  = ws var:l ws "=" ws int_expr:r ws                                                         {              Assign(:l, :r) };
+app     = ws "app" ws "(" ws var:target ws "," ws int_expr:idx ws ")" ws                           {          App(:target, :idx) };
+upd     = ws "upd" ws "(" ws var:target ws "," ws int_expr:idx ws "," ws int_expr:newval ws ")" ws { Upd(:target, :idx, :newval) };
 
 //BOOLEAN STUFF=========================================================================================================================
-bool_expr = and | or | impl | xor | not | relation;
+bool_expr = and | or | impl | xor | relation;
 
-and  = ws "(" ws bool_expr:l ws "||" ws bool_expr:r ws ")" ws {         And(:l, :r) };
-or   = ws "(" ws bool_expr:l ws "&&" ws bool_expr:r ws ")" ws {          Or(:l, :r) };
-impl = ws "(" ws bool_expr:l ws "=>" ws bool_expr:r ws ")" ws {         Imp(:l, :r) };
-xor  = ws "(" ws bool_expr:l ws "^^" ws bool_expr:r ws ")" ws {         Xor(:l, :r) };
-not  = ws "(" ws "!" ws bool_expr:r ws ")" ws                 { Xor(Bool(true), :r) };
+and  = ws "(" ws bool_expr:l ws "||" ws bool_expr:r ws ")" ws { And(:l, :r) };
+or   = ws "(" ws bool_expr:l ws "&&" ws bool_expr:r ws ")" ws {  Or(:l, :r) };
+impl = ws "(" ws bool_expr:l ws "=>" ws bool_expr:r ws ")" ws { Imp(:l, :r) };
+xor  = ws "(" ws bool_expr:l ws "^^" ws bool_expr:r ws ")" ws { Xor(:l, :r) };
 
 //RELATIONS=============================================================================================================================
 relation = eq | less_or_eq | more_or_eq | less | more;
 eq         = ws "(" ws int_expr:l ws "==" ws int_expr:r ws ")" ws {       Eq(:l, :r) };
-less_or_eq = ws "(" ws int_expr:l ws "<=" ws int_expr:r ws ")" ws { LessOrEq(:l, :r) };
+less       = ws "(" ws int_expr:l ws "<"  ws int_expr:r ws ")" ws {     Less(:l, :r) };
+more       = ws "(" ws int_expr:l ws ">"  ws int_expr:r ws ")" ws {     More(:l, :r) };
 more_or_eq = ws "(" ws int_expr:l ws ">=" ws int_expr:r ws ")" ws { MoreOrEq(:l, :r) };
-less       = ws "(" ws int_expr:l ws "<" ws int_expr:r ws ")" ws  {     Less(:l, :r) };
-more       = ws "(" ws int_expr:l ws ">" ws int_expr:r ws ")" ws  {     More(:l, :r) };
+less_or_eq = ws "(" ws int_expr:l ws "<=" ws int_expr:r ws ")" ws { LessOrEq(:l, :r) };
 
 //INTEGER OPERATIONS====================================================================================================================
-int_expr = sum | sub | mul | div | mod | neg | var;
+int_expr = sum | sub | mul | div | mod | var | int | app;
 
 sum = ws "(" ws int_expr:l ws "+" ws int_expr:r ws ")" ws { Sum(:l, :r) };
 sub = ws "(" ws int_expr:l ws "-" ws int_expr:r ws ")" ws { Sub(:l, :r) };
 mul = ws "(" ws int_expr:l ws "*" ws int_expr:r ws ")" ws { Mul(:l, :r) };
 div = ws "(" ws int_expr:l ws "/" ws int_expr:r ws ")" ws { Div(:l, :r) };
 mod = ws "(" ws int_expr:l ws "%" ws int_expr:r ws ")" ws { Mod(:l, :r) };
-neg = ws "(" ws "-" ws int_expr:r ws ")" ws               { Mul(-1, :r) };
 
 //VARIABLES=============================================================================================================================
-defenition = ws "var" ws var:_name ws ":" ws type:_type ws semi ws { VarDefinition(:_var, :_type) };
+defenition = ws "var" ws var:v ws ":" ws type:t ws ";" ws { VarDefinition(:v, :t) };
 
 //TYPES STUFF===========================================================================================================================
-type = int_type | bool_type | array_type;
+type = int_type | array_type | bool_type;
 
-bool_type = ws "bool" ws                    {       BoolType() };
-int_type = ws "int" ws                      {        IntType() };
+int_type   = ws "int"  ws                   {         IntType() };
+bool_type = ws "bool" ws                    {        BoolType() };
 array_type = ws "[" ws type:_type ws "]" ws { ArrayType(:_type) };
 
 //BASIC=================================================================================================================================
-true  = ws "true" ws  {Bool(true)};
-false = ws "false" ws {Bool(false)}
 
-word = ('a' - 'z')+ ('0' - '9')*;
-var = ws word$s ws { Var($s) };
-int = digit+ $s { Int(s2i($s)) };
-digit = '0' - '9';
-ws = (' ' | '\t' | '\n' | '\r')*;
-semi = ";"
+semi  =                         ";";
+digit =                   '0' - '9';
+var   = word$s          { Var($s) };
+word  =   ('a' - 'z')+ ('0' - '9')*;
+int   =  digit+ $s { Int(s2i($s)) };
+ws    = (' ' | '\t' | '\n' | '\r')*;

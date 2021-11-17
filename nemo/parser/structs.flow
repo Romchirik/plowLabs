@@ -2,23 +2,26 @@ import ds/tree;
 
 export {
     //main sector
-    Program(defenotions: [VarDefenition], body: Body);
-    Body ::= Assgin, Iterate, Test, Sel, Seq;
+    Program(defenitions: [VarDefinition], body: Body);
+    Body ::= Sqn, End;
+
+    //operators stuff
+    Sqn(rhs: Command, lhs: Body);
+    End(bhs: Command);
 
     //commands stuff
-    Assgin(var: Var, val: IntExpr);
+    Command ::= Assign, App, Upd, Iterate, Test, Sel;
+
     Iterate(body: Body);
-    Test(expr: BoolExpr);
+    Test(expr: Relation);
     Sel(rhs: Body, lhs: Body);
-    Seq(rhs: Body, lhs: Body);
-    
-    //operators stuff
+    Assign(var: Var, val: IntExpr);
     App(target: Var, idx: IntExpr);
     Upd(target: Var, idx: IntExpr, newval: IntExpr);
 
 
     //int expressions
-    IntExpr ::= Sum, Sub, Mul, Div, Mod, Int, Var;
+    IntExpr ::= Sum, Sub, Mul, Div, Mod, Int, Var, App;
     Sum(lhs: IntExpr, rhs: IntExpr);   
     Sub(lhs: IntExpr, rhs: IntExpr);  
     Mul(lhs: IntExpr, rhs: IntExpr);  
@@ -41,11 +44,15 @@ export {
     More(lhs: IntExpr, rhs: IntExpr);
 
     //variables stuff
-    VarDefenition(var: Var, Type)
-    Var(name: string)
+    VarDefinition(var: Var, type: Type);
+    Var(name: string);
 
     //Types
-    Type ::= Int, Bool, Array;
+    Type ::= IntType, BoolType, ArrayType;
+
+    IntType();
+    BoolType();
+    ArrayType(type: Type);
 
     Int(value: int);
     Bool(value: bool);
